@@ -21,8 +21,8 @@ fish_width = 70
 fish_height = 55
 position = (10,0)
 
-BigFish_width = 100
-BigFish_height = 55
+BigFish_width = 250
+BigFish_height = 120
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('A fishy situation')
@@ -48,18 +48,16 @@ BigFish_r  = pygame.transform.flip(BigFish_l,1,0)
 
 
 
-def Myfish(x,y,orientation,score):
-	Fish_l, Fish_r = fish_evolution(score)
+def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw):
+	Fish_l, Fish_r = fish_evolution(score,Fish_l_raw,Fish_r_raw)
 	if orientation == 'l':
 		gameDisplay.blit(Fish_l,(x,y))
 	if orientation == 'r':
 		gameDisplay.blit(Fish_r,(x,y))
 
-def fish_evolution(score):
+def fish_evolution(score,Fish_l_raw,Fish_r_raw):
 	fish_width = 70
 	fish_height = 55
-	Fish_l_raw  = pygame.image.load('Fish_l.png')
-	Fish_r_raw  = pygame.image.load('Fish_r.png')
 
 	if score >=5:
 		fish_width += 20 
@@ -91,6 +89,8 @@ def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
 		gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
 
 def game_loop():
+    Fish_l_raw  = pygame.image.load('Fish_l.png')
+    Fish_r_raw  = pygame.image.load('Fish_r.png')
     # frames per second
     fps = 60
     # My fish starting point:
@@ -167,7 +167,7 @@ def game_loop():
         # Display on screen
         gameDisplay.fill(blue)
         food(food_x,food_y,food_radius,food_color)
-        Myfish(x,y,orientation,score)
+        Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw)
         Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish)
         Display_Score(highscore,score,deaths)
 
