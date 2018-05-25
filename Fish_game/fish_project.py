@@ -61,10 +61,10 @@ def fish_evolution(score):
 	Fish_l_raw  = pygame.image.load('Fish_l.png')
 	Fish_r_raw  = pygame.image.load('Fish_r.png')
 
-	if score >=2:
+	if score >=5:
 		fish_width += 20 
 		fish_height += 20
-	if score >=3:
+	if score >=10:
 		fish_width += 20
 		fish_height += 20
 
@@ -91,6 +91,8 @@ def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
 		gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
 
 def game_loop():
+    # frames per second
+    fps = 60
     # My fish starting point:
     x = (display_width * 0.45)
     y = (display_height * 0.8)
@@ -112,6 +114,8 @@ def game_loop():
     Bigfish_y = (display_width * 0.45)
     Bigfish_x_change = 2
     Bigfish_y_change = -2
+    tracking_x = 0
+    tracking_y = 0
     orientation_bigfish = 'l'
 
 
@@ -185,18 +189,23 @@ def game_loop():
         else:
         	orientation_bigfish = 'l'
         
-        
-        if Bigfish_x > display_width - BigFish_width:
-            Bigfish_x_change = -2*random.randrange(0,10)
-        if  Bigfish_x < 0:
-            Bigfish_x_change = 2*random.randrange(0,10)
-        if  Bigfish_y > display_height - BigFish_height:
-            Bigfish_y_change = -2*random.randrange(0,10)
-        if  Bigfish_y < 0:
-            Bigfish_y_change = 2*random.randrange(0,10)
+        if Bigfish_x > display_width - BigFish_width or tracking_x > random.randrange(0,display_height):
+            Bigfish_x_change = -3
+            tracking_x = 0
+        if  Bigfish_x < 0 or tracking_x > random.randrange(0,display_height):
+            Bigfish_x_change = 3
+            tracking_x = 0
+        if  Bigfish_y > display_height - BigFish_height or tracking_y > random.randrange(0,display_height):
+            Bigfish_y_change = -3
+            tracking_y = 0
+        if  Bigfish_y < 0 or tracking_y > random.randrange(0,display_height):
+            Bigfish_y_change = 3
+            tracking_y = 0
             
         Bigfish_x += Bigfish_x_change
         Bigfish_y += Bigfish_y_change
+        tracking_x += abs(Bigfish_x_change)/fps
+        tracking_y += abs(Bigfish_y_change)/fps
              
         # Bigfish catches myfish
         if x+fish_width/2 > Bigfish_x  and  x+fish_width/2 < Bigfish_x + BigFish_width and y+fish_height/2 > Bigfish_y  and y+fish_height/2 < Bigfish_y + BigFish_height:
@@ -209,7 +218,7 @@ def game_loop():
            	highscore = score 
 
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(fps)
         
 game_loop()
 pygame.quit()
