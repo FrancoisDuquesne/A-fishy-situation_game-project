@@ -1,0 +1,13 @@
+
+a faire:
+- creer un compteur de vies, si le poisson consome toutes ses vies -> Game over.
+- poisson grossi quand il mange puis quand il est assez gros il donne une piece de monnaie.
+- inventer une moyen de gagner des sous pour pouvoir acheter des upgrades.
+- poissons libres qui se baladent random
+
+
+
+
+Idees:
+- incorporer l'idee de pollution de l'eau
+- autres petits poissons peuvent etre manges par Myfish
