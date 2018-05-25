@@ -1,3 +1,7 @@
+"""
+Created on Fri May 25 17:12:20 2018
+@author: francois, jillian
+"""
 import pygame
 import time
 import random
