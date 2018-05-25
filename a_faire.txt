@@ -11,3 +11,5 @@ a faire:
 Idees:
 - incorporer l'idee de pollution de l'eau
 - autres petits poissons peuvent etre manges par Myfish
+- ajouter des food qui donnent des pouvoirs speciaux (extra life, extra speed, etc.)
+
