@@ -189,10 +189,10 @@ def game_loop():
         else:
         	orientation_bigfish = 'l'
         
-        if Bigfish_x > display_width - BigFish_width or tracking_x > random.randrange(0,display_height):
+        if Bigfish_x > display_width - BigFish_width or tracking_x > random.randrange(0,display_width):
             Bigfish_x_change = -3
             tracking_x = 0
-        if  Bigfish_x < 0 or tracking_x > random.randrange(0,display_height):
+        if  Bigfish_x < 0 or tracking_x > random.randrange(0,display_width):
             Bigfish_x_change = 3
             tracking_x = 0
         if  Bigfish_y > display_height - BigFish_height or tracking_y > random.randrange(0,display_height):

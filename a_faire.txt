@@ -12,4 +12,7 @@ Idees:
 - incorporer l'idee de pollution de l'eau
 - autres petits poissons peuvent etre manges par Myfish
 - ajouter des food qui donnent des pouvoirs speciaux (extra life, extra speed, etc.)
+- une food qui fasse tomber pleein de petit food partout.
+- possibilite de jouer a deux comme pour bubble trouble.
+
 
