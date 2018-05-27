@@ -91,9 +91,9 @@ def GameOver_Display(texte):
     gameDisplay.blit(TextSurf,TextRect)
     pygame.display.flip()
 
-
 def mort():
     GameOver_Display('No more lives left :(')
+
 def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
     if orientation_bigfish == 'l':
         gameDisplay.blit(BigFish_l,(Bigfish_x,Bigfish_y))
@@ -101,6 +101,10 @@ def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
         gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
 
 def game_loop():
+
+	##### LOCAL VARIABLES #####
+
+	# Images
     Fish_l_raw  = pygame.image.load('resources/Fish_l.png')
     Fish_r_raw  = pygame.image.load('resources/Fish_r.png')
     # frames per second
@@ -135,17 +139,14 @@ def game_loop():
     
     while not gameExit:
         
+        ###### KEYS #####
+
         # Quit key
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-                # out of lives
-            if lives == 0:
-                mort()
-                time.sleep(5)
-                pygame.quit()
-                quit()
+                
                 # Movement keys
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -171,6 +172,8 @@ def game_loop():
         x += x_change
         y += y_change
         
+        ##### BOUNDARIES #####
+
         # define boundaries for fish movement on on display
         if x > display_width - fish_width:
             x = display_width - fish_width
@@ -181,12 +184,16 @@ def game_loop():
         if  y < 0:
             y = 0
 
-        # Display on screen
+        #####  DISPLAY #####
+
         gameDisplay.fill(blue)
         food(food_x,food_y,food_radius,food_color)
         Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw)
         Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish)
         Display_Score(highscore,score,lives)
+
+
+        ##### EVENTS #####
 
         # Create food
         if food_y > display_height:
