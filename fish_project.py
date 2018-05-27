@@ -241,6 +241,13 @@ def game_loop():
         if score > highscore:
            highscore = score
 
+        # out of lives
+        if lives < 1:
+            mort()
+            time.sleep(5)
+            pygame.quit()
+            quit()
+
         
 
         pygame.display.update()
