@@ -73,6 +73,10 @@ def fish_evolution(score,Fish_l_raw,Fish_r_raw):
 def food(foodx,foody,foodw,color):
     pygame.draw.circle(gameDisplay,color,(foodx,foody),foodw)
 
+def extra_food(extra_food_x,extra_food_y,foodw,color):
+    for i in range(len(extra_food_y)):
+        pygame.draw.circle(gameDisplay,color,(extra_food_x[i],extra_food_y[i]),foodw)
+
 def Display_Score(count1,count2,count3):
     font = pygame.font.SysFont(None,25)
     text1 = font.render("Highscore: " + str(count1),True,black)
@@ -134,7 +138,12 @@ def game_loop():
     tracking_y = 0
     orientation_bigfish = 'l'
 
+	# extra food special
+    extrafood=0
+    extra_food_x = []
+    extra_food_y = []
 
+    framecount = 0
     gameExit = False
     
     while not gameExit:
@@ -187,7 +196,8 @@ def game_loop():
         #####  DISPLAY #####
 
         gameDisplay.fill(blue)
-        food(food_x,food_y,food_radius,food_color)
+        if extrafood != 1:
+            food(food_x,food_y,food_radius,food_color)
         Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw)
         Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish)
         Display_Score(highscore,score,lives)
@@ -202,10 +212,34 @@ def game_loop():
             food_x = random.randrange(0,display_width)
         food_y += food_speed
         
+        # Extra food special
+        if score == 5:
+            extrafood = 1
+            start_time = time.clock()
+            
+        if extrafood ==1:
+            elapsed_time = time.clock() - start_time 
+            
+            if elapsed_time < 2 and framecount == 1 or elapsed_time < 2 and framecount == 15 or elapsed_time < 2 and framecount == 30 or elapsed_time < 2 and framecount == 45:
+                extra_food_x.append(random.randrange(0, display_width))
+                extra_food_y.append(0)
+            extra_food_y=[a+1 for a in extra_food_y]
+            extra_food(extra_food_x,extra_food_y,food_radius,food_color)
+            
+            if  elapsed_time > 2 and min(extra_food_y) > display_height:
+                extrafood = 0
+        
         # fish catches food
-        if food_x > x  and  food_x < x + fish_width and food_y > y  and food_y < y + fish_height:
-            food_y = display_height
-            score +=1
+        if extrafood==1:
+            for i in range(len(extra_food_x)):
+                if extra_food_x[i] > x  and  extra_food_x[i] < x + fish_width and extra_food_y[i] > y  and extra_food_y[i] < y + fish_height:
+                    extra_food_y[i] = display_height
+                    score +=1
+      		
+        else:
+        	if food_x > x  and  food_x < x + fish_width and food_y > y  and food_y < y + fish_height:
+        		food_y = display_height
+        		score +=1
         
         # Big fish
         if Bigfish_x_change > 0:
@@ -236,8 +270,8 @@ def game_loop():
             y = 0
             x = 0
             lives -=1
-            score = 0
-            
+
+        # Highscore calculation   
         if score > highscore:
            highscore = score
 
@@ -248,7 +282,12 @@ def game_loop():
             pygame.quit()
             quit()
 
-        
+
+        # frame counter
+        if framecount > 59:
+            framecount=0
+        else:
+            framecount+=1
 
         pygame.display.update()
         clock.tick(fps)
