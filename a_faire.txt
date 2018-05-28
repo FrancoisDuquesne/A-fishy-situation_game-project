@@ -14,5 +14,7 @@ Idees:
 - ajouter des food qui donnent des pouvoirs speciaux (extra life, extra speed, etc.)
 - une food qui fasse tomber pleein de petit food partout.
 - possibilite de jouer a deux comme pour bubble trouble.
+- pour gagner le jeux, il faut etre plus grand que le Big fish et le manger!
+
 
 
