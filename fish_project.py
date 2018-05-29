@@ -2,6 +2,8 @@
 Created on Fri May 25 17:12:20 2018
 @author: francois, jillian
 """
+# j'ai fixe lives a -10 et mouvement initial du Big fish a 0 pour faciliter le developpement.
+
 import pygame
 import time
 import random
@@ -17,8 +19,8 @@ red = (255,0,0)
 blue = (19,187,255)
 food_color = (255,187,19)
 
-fish_width = 70
-fish_height = 55
+fish_width = 80
+fish_height = 50
 position = (10,0)
 
 BigFish_width = 250
@@ -49,15 +51,19 @@ BigFish_r  = pygame.transform.flip(BigFish_l,1,0)
 
 
 def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw):
+    fish_width = 80
+    fish_height = 50
     Fish_l, Fish_r = fish_evolution(score,Fish_l_raw,Fish_r_raw)
     if orientation == 'l':
         gameDisplay.blit(Fish_l,(x,y))
+        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
     if orientation == 'r':
         gameDisplay.blit(Fish_r,(x,y))
+        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
 
 def fish_evolution(score,Fish_l_raw,Fish_r_raw):
-    fish_width = 70
-    fish_height = 55
+    fish_width = 80
+    fish_height = 50
 
     if score >=5:
         fish_width += 20
@@ -99,10 +105,13 @@ def mort():
     GameOver_Display('No more lives left :(')
 
 def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
+	
     if orientation_bigfish == 'l':
         gameDisplay.blit(BigFish_l,(Bigfish_x,Bigfish_y))
+        pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
     if orientation_bigfish == 'r':
         gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
+        pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
 
 def game_loop():
 
@@ -132,8 +141,8 @@ def game_loop():
     # Big fish starting point
     Bigfish_x = (display_width * 0.40)
     Bigfish_y = (display_width * 0.45)
-    Bigfish_x_change = 2
-    Bigfish_y_change = -2
+    Bigfish_x_change = 0#2
+    Bigfish_y_change = 0#-2
     tracking_x = 0
     tracking_y = 0
     orientation_bigfish = 'l'
@@ -260,13 +269,13 @@ def game_loop():
             Bigfish_y_change = 3
             tracking_y = 0
             
-        Bigfish_x += Bigfish_x_change
-        Bigfish_y += Bigfish_y_change
+        # Bigfish_x += Bigfish_x_change
+        # Bigfish_y += Bigfish_y_change
         tracking_x += abs(Bigfish_x_change)/fps
         tracking_y += abs(Bigfish_y_change)/fps
              
         # Bigfish catches myfish
-        if x+fish_width/2 > Bigfish_x  and  x+fish_width/2 < Bigfish_x + BigFish_width and y+fish_height/2 > Bigfish_y  and y+fish_height/2 < Bigfish_y + BigFish_height:
+        if x+fish_width > Bigfish_x  and  x < Bigfish_x + BigFish_width and y + fish_height> Bigfish_y+30  and y < Bigfish_y + BigFish_height-20:
             y = 0
             x = 0
             lives -=1
@@ -276,9 +285,9 @@ def game_loop():
            highscore = score
 
         # out of lives
-        if lives < 1:
+        if lives < -10:
             mort()
-            time.sleep(5)
+            time.sleep(2)
             pygame.quit()
             quit()
 
