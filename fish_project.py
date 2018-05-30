@@ -89,15 +89,7 @@ def Display_Score(highscore,score,lives):
     gameDisplay.blit(text2,(3,23))
     for i in range(lives):
     	gameDisplay.blit(Life,(3+i*30,43))
-	    # if lives == 3:
-	    #     gameDisplay.blit(Life,(3,43))
-	    #     gameDisplay.blit(Life,(33,43))
-	    #     gameDisplay.blit(Life,(63,43))
-	    # if lives == 2:
-	    #     gameDisplay.blit(Life,(3,43))
-	    #     gameDisplay.blit(Life,(33,43))
-	    # if lives == 1:
-	    #     gameDisplay.blit(Life,(3,43))
+
         
 def mort():
     GameOver_Display('No more lives left :(')
