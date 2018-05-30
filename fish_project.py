@@ -19,8 +19,8 @@ red = (255,0,0)
 blue = (19,187,255)
 food_color = (255,187,19)
 
-fish_width = 80
-fish_height = 50
+fish_width = 60
+fish_height = 35
 
 BigFish_width = 250
 BigFish_height = 120
@@ -219,8 +219,8 @@ def game_loop():
         #####  DISPLAY #####
 
         gameDisplay.fill(blue)
-        if extrafood != 1:
-            food(food_x,food_y,food_radius,food_color)
+        # if extrafood != 1:
+        food(food_x,food_y,food_radius,food_color)
         Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height)
         Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish)
         Display_Score(highscore,score,lives)
@@ -236,20 +236,21 @@ def game_loop():
         food_y += food_speed
         
         # Condition for Specials
-        if score == 2:
+        if random.randrange(1,100*60) < 10:
             extrafood = 1
-            start_time = time.clock()
-       
-        if score == 15:
+            
+        if random.randrange(1,100*60) < 10 :   # score == 15:
             extra_life = 1
 
         # Extra food special
         if extrafood ==1:
             draw = True
+
             if once_extrafood == 0:
-                extra_food_special_x = random.randrange(0,display_width)
+                extra_food_special_x = random.randrange(1,display_width)
                 extra_food_special_y = 0
                 once_extrafood = 1
+
             if draw == True:
                 pygame.draw.circle(gameDisplay,red,(extra_food_special_x,extra_food_special_y),food_radius+1)
                 extra_food_special_y += 1
@@ -257,27 +258,37 @@ def game_loop():
             if extra_food_special_x > x  and  extra_food_special_x < x + fish_width and extra_food_special_y > y  and extra_food_special_y < y + fish_height:
                 extra_food_special_y = display_height
                 draw = False
-                extrafood = 0
+                # start_bonus_food = 1
+                start_time = time.clock()
                 start_bonus_food = 1
 
-            if start_bonus_food == 1:
-	            elapsed_time = time.clock() - start_time 
-	            
-	            if elapsed_time < 2 and framecount == 1 or elapsed_time < 2 and framecount == 15 or elapsed_time < 2 and framecount == 30 or elapsed_time < 2 and framecount == 45:
-	                extra_food_x.append(random.randrange(1, display_width))
-	                extra_food_y.append(0)
-	            extra_food_y=[a+1 for a in extra_food_y]
-	            extra_food(extra_food_x,extra_food_y,food_radius,food_color)
-	            
-	            if  elapsed_time > 2 and min(extra_food_y) > display_height:
-	                extrafood = 0
-	                start_bonus_food = 0
+
+            if extra_food_special_y > display_height:
+            	extrafood = 0
+            	once_extrafood = 0
+
+
+        if start_bonus_food == 1:
+            elapsed_time = time.clock() - start_time 
+
+            if elapsed_time < 3 and framecount == 1 or elapsed_time < 3 and framecount == 15 or elapsed_time < 3 and framecount == 30 or elapsed_time < 3 and framecount == 45:
+                extra_food_x.append(random.randrange(1, display_width))
+                extra_food_y.append(0)
+            extra_food_y=[a+food_speed for a in extra_food_y]
+            extra_food(extra_food_x,extra_food_y,food_radius,food_color)
+            
+            if  elapsed_time > 3 and min(extra_food_y) > display_height:
+                # extrafood = 0
+                # print(extrafood)
+                start_bonus_food = 0
+
+
         
         # extra life special:
         if extra_life == 1:
             if once_life == 0:
                 life_x = random.randrange(0,display_width)
-                life_y = 0
+                life_y = -20
                 once_life = 1
             gameDisplay.blit(Life,(life_x,life_y))
             life_y += 1
@@ -292,11 +303,11 @@ def game_loop():
 
 
         # fish catches food
-        if extrafood==1:
-            for i in range(len(extra_food_x)):
-                if extra_food_x[i] > x  and  extra_food_x[i] < x + fish_width and extra_food_y[i] > y  and extra_food_y[i] < y + fish_height:
-                    extra_food_y[i] = display_height
-                    score +=1
+        # if extrafood==1:
+        for i in range(len(extra_food_x)):
+            if extra_food_x[i] > x  and  extra_food_x[i] < x + fish_width and extra_food_y[i] > y  and extra_food_y[i] < y + fish_height:
+                extra_food_y[i] = display_height
+                score +=1
         else:
         	if food_x > x  and  food_x < x + fish_width and food_y > y  and food_y < y + fish_height:
         		food_y = display_height
