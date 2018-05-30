@@ -21,7 +21,6 @@ food_color = (255,187,19)
 
 fish_width = 80
 fish_height = 50
-position = (10,0)
 
 BigFish_width = 250
 BigFish_height = 120
@@ -46,14 +45,15 @@ BigFish = pygame.image.load('resources/Bigfish.png')
 BigFish_l  = pygame.transform.scale(BigFish, (BigFish_width,BigFish_height))
 BigFish_r  = pygame.transform.flip(BigFish_l,1,0)
 
+Life = pygame.image.load('resources/life.png')
+Life = pygame.transform.scale(Life, (20,20))
 
 
+def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height):
 
+    Fish_l = pygame.transform.scale(Fish_l_raw, (fish_width,fish_height))
+    Fish_r = pygame.transform.scale(Fish_r_raw, (fish_width,fish_height))
 
-def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw):
-    fish_width = 80
-    fish_height = 50
-    Fish_l, Fish_r = fish_evolution(score,Fish_l_raw,Fish_r_raw)
     if orientation == 'l':
         gameDisplay.blit(Fish_l,(x,y))
         pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
@@ -61,20 +61,18 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw):
         gameDisplay.blit(Fish_r,(x,y))
         pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
 
-def fish_evolution(score,Fish_l_raw,Fish_r_raw):
-    fish_width = 80
-    fish_height = 50
+def fish_evolution(score,fish_width,fish_height,run_once):
+    
+    if score >=2 and run_once==0:
+        fish_width += round(fish_width*0.1)
+        fish_height += round(fish_height*0.1)
+        run_once = 1
+    if score >=5 and run_once == 1:
+        fish_width += round(fish_width*0.1)
+        fish_height += round(fish_height*0.1)
+        run_once = 2
 
-    if score >=5:
-        fish_width += 20
-        fish_height += 20
-    if score >=10:
-        fish_width += 20
-        fish_height += 20
-
-    Fish_l = pygame.transform.scale(Fish_l_raw, (fish_width,fish_height))
-    Fish_r = pygame.transform.scale(Fish_r_raw, (fish_width,fish_height))
-    return Fish_l, Fish_r
+    return fish_width,fish_height,run_once
 
 def food(foodx,foody,foodw,color):
     pygame.draw.circle(gameDisplay,color,(foodx,foody),foodw)
@@ -83,26 +81,34 @@ def extra_food(extra_food_x,extra_food_y,foodw,color):
     for i in range(len(extra_food_y)):
         pygame.draw.circle(gameDisplay,color,(extra_food_x[i],extra_food_y[i]),foodw)
 
-def Display_Score(count1,count2,count3):
+def Display_Score(highscore,score,lives):
     font = pygame.font.SysFont(None,25)
-    text1 = font.render("Highscore: " + str(count1),True,black)
+    text1 = font.render("Highscore: " + str(highscore),True,black)
     gameDisplay.blit(text1,(3,3))
-    text2 = font.render("Score: " + str(count2),True,black)
+    text2 = font.render("Score: " + str(score),True,black)
     gameDisplay.blit(text2,(3,23))
-    text3 = font.render("Lives left " + str(count3),True,black)
-    gameDisplay.blit(text3,(3,43))
+    if lives == 3:
+        gameDisplay.blit(Life,(3,43))
+        gameDisplay.blit(Life,(33,43))
+        gameDisplay.blit(Life,(63,43))
+    if lives == 2:
+        gameDisplay.blit(Life,(3,43))
+        gameDisplay.blit(Life,(33,43))
+    if lives == 1:
+        gameDisplay.blit(Life,(3,43))
+        
+def mort():
+    GameOver_Display('No more lives left :(')
 
 def GameOver_Display(texte):
     textefont = pygame.font.SysFont('comicsansms',72)
     textSurface = textefont.render(texte,True,black)
     TextSurf , TextRect = textSurface,textSurface.get_rect()
     TextRect.center = ((display_width/2),(display_height/2))
-    gameDisplay.fill(blue)
+    # gameDisplay.fill(blue)
     gameDisplay.blit(TextSurf,TextRect)
     pygame.display.flip()
 
-def mort():
-    GameOver_Display('No more lives left :(')
 
 def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
 	
@@ -112,6 +118,7 @@ def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
     if orientation_bigfish == 'r':
         gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
         pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
+
 
 def game_loop():
 
@@ -126,11 +133,13 @@ def game_loop():
     x = (display_width * 0.45)
     y = (display_height * 0.8)
     orientation = 'l'
+    fish_width = 60
+    fish_height = 35
     # fish position change
     x_change = 0
     y_change = 0
     # food position
-    food_x = random.randrange(0, display_width)
+    food_x = random.randrange(1, display_width)
     food_y = 0
     food_radius = 5
     food_speed = 2
@@ -141,8 +150,8 @@ def game_loop():
     # Big fish starting point
     Bigfish_x = (display_width * 0.40)
     Bigfish_y = (display_width * 0.45)
-    Bigfish_x_change = 0#2
-    Bigfish_y_change = 0#-2
+    Bigfish_x_change = 2
+    Bigfish_y_change = -2
     tracking_x = 0
     tracking_y = 0
     orientation_bigfish = 'l'
@@ -153,6 +162,7 @@ def game_loop():
     extra_food_y = []
 
     framecount = 0
+    run_once=0
     gameExit = False
     
     while not gameExit:
@@ -207,30 +217,31 @@ def game_loop():
         gameDisplay.fill(blue)
         if extrafood != 1:
             food(food_x,food_y,food_radius,food_color)
-        Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw)
+        Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height)
         Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish)
         Display_Score(highscore,score,lives)
 
 
         ##### EVENTS #####
 
-        # Create food
+        # falling food
         if food_y > display_height:
             # food_y = -random.randrange(0,display_width) - food_radius
             food_y = 0 - food_radius
             food_x = random.randrange(0,display_width)
         food_y += food_speed
         
-        # Extra food special
+        # Condition for Specials
         if score == 5:
             extrafood = 1
             start_time = time.clock()
-            
+
+        # Extra food special
         if extrafood ==1:
             elapsed_time = time.clock() - start_time 
             
             if elapsed_time < 2 and framecount == 1 or elapsed_time < 2 and framecount == 15 or elapsed_time < 2 and framecount == 30 or elapsed_time < 2 and framecount == 45:
-                extra_food_x.append(random.randrange(0, display_width))
+                extra_food_x.append(random.randrange(1, display_width))
                 extra_food_y.append(0)
             extra_food_y=[a+1 for a in extra_food_y]
             extra_food(extra_food_x,extra_food_y,food_radius,food_color)
@@ -244,12 +255,13 @@ def game_loop():
                 if extra_food_x[i] > x  and  extra_food_x[i] < x + fish_width and extra_food_y[i] > y  and extra_food_y[i] < y + fish_height:
                     extra_food_y[i] = display_height
                     score +=1
-      		
         else:
         	if food_x > x  and  food_x < x + fish_width and food_y > y  and food_y < y + fish_height:
         		food_y = display_height
         		score +=1
         
+        fish_width,fish_height,run_once = fish_evolution(score,fish_width,fish_height,run_once)
+
         # Big fish
         if Bigfish_x_change > 0:
             orientation_bigfish = 'r'
@@ -269,8 +281,8 @@ def game_loop():
             Bigfish_y_change = 3
             tracking_y = 0
             
-        # Bigfish_x += Bigfish_x_change
-        # Bigfish_y += Bigfish_y_change
+        Bigfish_x += Bigfish_x_change
+        Bigfish_y += Bigfish_y_change
         tracking_x += abs(Bigfish_x_change)/fps
         tracking_y += abs(Bigfish_y_change)/fps
              
@@ -280,12 +292,22 @@ def game_loop():
             x = 0
             lives -=1
 
+        # # Fre life:
+        # if time.clock() = random.randrange(0,time.clock()+100)
+        #     life_x = random.randrange(0,display_width)
+        #     life_y = 0
+        #     gameDisplay.blit(Life,(life_x,life_y))
+        #     life_y += 1
+
+
+
+
         # Highscore calculation   
         if score > highscore:
            highscore = score
 
         # out of lives
-        if lives < -10:
+        if lives < 1:
             mort()
             time.sleep(2)
             pygame.quit()
