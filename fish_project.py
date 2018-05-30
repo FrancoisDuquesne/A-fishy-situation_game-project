@@ -87,15 +87,17 @@ def Display_Score(highscore,score,lives):
     gameDisplay.blit(text1,(3,3))
     text2 = font.render("Score: " + str(score),True,black)
     gameDisplay.blit(text2,(3,23))
-    if lives == 3:
-        gameDisplay.blit(Life,(3,43))
-        gameDisplay.blit(Life,(33,43))
-        gameDisplay.blit(Life,(63,43))
-    if lives == 2:
-        gameDisplay.blit(Life,(3,43))
-        gameDisplay.blit(Life,(33,43))
-    if lives == 1:
-        gameDisplay.blit(Life,(3,43))
+    for i in range(lives):
+    	gameDisplay.blit(Life,(3+i*30,43))
+	    # if lives == 3:
+	    #     gameDisplay.blit(Life,(3,43))
+	    #     gameDisplay.blit(Life,(33,43))
+	    #     gameDisplay.blit(Life,(63,43))
+	    # if lives == 2:
+	    #     gameDisplay.blit(Life,(3,43))
+	    #     gameDisplay.blit(Life,(33,43))
+	    # if lives == 1:
+	    #     gameDisplay.blit(Life,(3,43))
         
 def mort():
     GameOver_Display('No more lives left :(')
@@ -157,9 +159,19 @@ def game_loop():
     orientation_bigfish = 'l'
 
 	# extra food special
-    extrafood=0
+    extrafood = 0
+    once_extrafood = 0
+    start_bonus_food = 0
     extra_food_x = []
     extra_food_y = []
+
+    #extra life special 
+    extra_life = 0
+    once_life = 0
+    proba = random.randrange(0,100)/100
+    life_x = random.randrange(0,display_width)
+    life_y = 0
+
 
     framecount = 0
     run_once=0
@@ -232,23 +244,61 @@ def game_loop():
         food_y += food_speed
         
         # Condition for Specials
-        if score == 5:
+        if score == 2:
             extrafood = 1
             start_time = time.clock()
+       
+        if score == 15:
+            extra_life = 1
 
         # Extra food special
         if extrafood ==1:
-            elapsed_time = time.clock() - start_time 
-            
-            if elapsed_time < 2 and framecount == 1 or elapsed_time < 2 and framecount == 15 or elapsed_time < 2 and framecount == 30 or elapsed_time < 2 and framecount == 45:
-                extra_food_x.append(random.randrange(1, display_width))
-                extra_food_y.append(0)
-            extra_food_y=[a+1 for a in extra_food_y]
-            extra_food(extra_food_x,extra_food_y,food_radius,food_color)
-            
-            if  elapsed_time > 2 and min(extra_food_y) > display_height:
+            draw = True
+            if once_extrafood == 0:
+                extra_food_special_x = random.randrange(0,display_width)
+                extra_food_special_y = 0
+                once_extrafood = 1
+            if draw == True:
+                pygame.draw.circle(gameDisplay,red,(extra_food_special_x,extra_food_special_y),food_radius+1)
+                extra_food_special_y += 1
+
+            if extra_food_special_x > x  and  extra_food_special_x < x + fish_width and extra_food_special_y > y  and extra_food_special_y < y + fish_height:
+                extra_food_special_y = display_height
+                draw = False
                 extrafood = 0
+                start_bonus_food = 1
+
+            if start_bonus_food == 1:
+	            elapsed_time = time.clock() - start_time 
+	            
+	            if elapsed_time < 2 and framecount == 1 or elapsed_time < 2 and framecount == 15 or elapsed_time < 2 and framecount == 30 or elapsed_time < 2 and framecount == 45:
+	                extra_food_x.append(random.randrange(1, display_width))
+	                extra_food_y.append(0)
+	            extra_food_y=[a+1 for a in extra_food_y]
+	            extra_food(extra_food_x,extra_food_y,food_radius,food_color)
+	            
+	            if  elapsed_time > 2 and min(extra_food_y) > display_height:
+	                extrafood = 0
+	                start_bonus_food = 0
         
+        # extra life special:
+        if extra_life == 1:
+            if once_life == 0:
+                life_x = random.randrange(0,display_width)
+                life_y = 0
+                once_life = 1
+            gameDisplay.blit(Life,(life_x,life_y))
+            life_y += 1
+
+        if life_x > x  and  life_x < x + fish_width and life_y > y  and life_y < y + fish_height:
+            life_y = display_height
+            lives +=1
+
+        if life_y > display_height:
+            extra_life = 0
+            once_life = 0
+
+
         # fish catches food
         if extrafood==1:
             for i in range(len(extra_food_x)):
@@ -291,14 +341,6 @@ def game_loop():
             y = 0
             x = 0
             lives -=1
-
-        # # Fre life:
-        # if time.clock() = random.randrange(0,time.clock()+100)
-        #     life_x = random.randrange(0,display_width)
-        #     life_y = 0
-        #     gameDisplay.blit(Life,(life_x,life_y))
-        #     life_y += 1
-
 
 
 
