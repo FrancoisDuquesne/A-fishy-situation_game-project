@@ -48,6 +48,9 @@ BigFish_r  = pygame.transform.flip(BigFish_l,1,0)
 Life = pygame.image.load('resources/life.png')
 Life = pygame.transform.scale(Life, (20,20))
 
+Banana = pygame.image.load('resources/banana.png')
+Banana = pygame.transform.scale(Banana, (30,30))
+
 
 def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height):
 
@@ -56,10 +59,10 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height):
 
     if orientation == 'l':
         gameDisplay.blit(Fish_l,(x,y))
-        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+        # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
     if orientation == 'r':
         gameDisplay.blit(Fish_r,(x,y))
-        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+        # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
 
 def fish_evolution(score,fish_width,fish_height,run_once):
     
@@ -108,10 +111,10 @@ def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
 	
     if orientation_bigfish == 'l':
         gameDisplay.blit(BigFish_l,(Bigfish_x,Bigfish_y))
-        pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
+        # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
     if orientation_bigfish == 'r':
         gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
-        pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
+        # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
 
 
 def game_loop():
@@ -239,7 +242,7 @@ def game_loop():
         if random.randrange(1,100*60) < 10:
             extrafood = 1
             
-        if random.randrange(1,100*60) < 10 :   # score == 15:
+        if random.randrange(1,100*60) < 5 :   # 5 chances sur 100 par secondes
             extra_life = 1
 
         # Extra food special
@@ -252,10 +255,11 @@ def game_loop():
                 once_extrafood = 1
 
             if draw == True:
-                pygame.draw.circle(gameDisplay,red,(extra_food_special_x,extra_food_special_y),food_radius+1)
+                # pygame.draw.circle(gameDisplay,red,(extra_food_special_x,extra_food_special_y),food_radius+1)
+                gameDisplay.blit(Banana,(extra_food_special_x,extra_food_special_y))
                 extra_food_special_y += 1
 
-            if extra_food_special_x > x  and  extra_food_special_x < x + fish_width and extra_food_special_y > y  and extra_food_special_y < y + fish_height:
+            if extra_food_special_x + 30 > x  and  extra_food_special_x < x + fish_width and extra_food_special_y +30 > y  and extra_food_special_y < y + fish_height:
                 extra_food_special_y = display_height
                 draw = False
                 # start_bonus_food = 1
@@ -287,7 +291,7 @@ def game_loop():
         # extra life special:
         if extra_life == 1:
             if once_life == 0:
-                life_x = random.randrange(0,display_width)
+                life_x = random.randrange(0,display_width - 20)
                 life_y = -20
                 once_life = 1
             gameDisplay.blit(Life,(life_x,life_y))
