@@ -43,29 +43,65 @@ Life = pygame.transform.scale(Life, (20,20))
 Banana = pygame.image.load('resources/banana.png')
 Banana = pygame.transform.scale(Banana, (30,30))
 
+angry_Fish_l_raw = pygame.image.load('resources/angry_fish.png')
+angry_Fish_r_raw = pygame.transform.flip(angry_Fish_l_raw,1,0)
 
-def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height):
+
+def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,can_eat_Bigfish):
 
     Fish_l = pygame.transform.scale(Fish_l_raw, (fish_width,fish_height))
     Fish_r = pygame.transform.scale(Fish_r_raw, (fish_width,fish_height))
 
-    if orientation == 'l':
-        gameDisplay.blit(Fish_l,(x,y))
-        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
-    if orientation == 'r':
-        gameDisplay.blit(Fish_r,(x,y))
-        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+    angry_Fish_l = pygame.transform.scale(angry_Fish_l_raw, (fish_width,fish_height))
+    angry_Fish_r = pygame.transform.scale(angry_Fish_r_raw, (fish_width,fish_height))
+    if can_eat_Bigfish ==0:
+        if fish_width < 85:
+            if orientation == 'l':
+                gameDisplay.blit(Fish_l,(x,y))
+                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+            if orientation == 'r':
+                gameDisplay.blit(Fish_r,(x,y))
+                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+
+        if fish_width > 85:
+            if orientation == 'l':
+                gameDisplay.blit(Fish_l,(x,y))
+                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+            if orientation == 'r':
+                gameDisplay.blit(Fish_r,(x,y))
+                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+            can_eat_Bigfish = 1
+
+    if can_eat_Bigfish == 1:
+        if fish_width < 160:
+            if orientation == 'l':
+                gameDisplay.blit(angry_Fish_l,(x,y))
+            if orientation == 'r':
+                gameDisplay.blit(angry_Fish_r,(x,y))
+    
+        if fish_width > 160:
+            if orientation == 'l':
+                gameDisplay.blit(angry_Fish_l,(x,y))
+            if orientation == 'r':
+                gameDisplay.blit(angry_Fish_r,(x,y))
+            can_eat_Bigfish = 1
+
+    return can_eat_Bigfish
 
 def fish_evolution(score,fish_width,fish_height,run_once):
     
     if score >=2 and run_once==0:
-        fish_width += round(fish_width*0.2)
-        fish_height += round(fish_height*0.2)
+        fish_width += round(fish_width*0.23)
+        fish_height += round(fish_height*0.3)
         run_once = 1
     if score >=5 and run_once == 1:
-        fish_width += round(fish_width*0.2)
-        fish_height += round(fish_height*0.2)
+        fish_width += round(fish_width*0.4)
+        fish_height += round(fish_height*0.4)
         run_once = 2
+    if score >=10 and run_once == 2:
+        fish_width += round(fish_width*0.5)
+        fish_height += round(fish_height*0.5)
+        run_once = 3
 
     return fish_width,fish_height,run_once
 
@@ -99,15 +135,19 @@ def GameOver_Display(texte):
     pygame.display.flip()
 
 
-def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish):
-	
-    if orientation_bigfish == 'l':
-        gameDisplay.blit(BigFish_l,(Bigfish_x,Bigfish_y))
-        # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
-    if orientation_bigfish == 'r':
-        gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
-        # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
+def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish,BigFish_dead):
+    if BigFish_dead == 0:
+        if orientation_bigfish == 'l':
+            gameDisplay.blit(BigFish_l,(Bigfish_x,Bigfish_y))
+            # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
+        if orientation_bigfish == 'r':
+            gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
+            # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
+    if BigFish_dead == 1: 
+        BigFishDead = pygame.transform.flip(BigFish_l,0,1)
+        gameDisplay.blit(BigFishDead,(Bigfish_x,Bigfish_y))
 
+    
 
 def game_loop():
 
@@ -121,6 +161,7 @@ def game_loop():
     orientation = 'l'
     fish_width = 60
     fish_height = 35
+    can_eat_Bigfish = 0
     # fish position change
     x_change = 0
     y_change = 0
@@ -141,6 +182,7 @@ def game_loop():
     tracking_x = 0
     tracking_y = 0
     orientation_bigfish = 'l'
+    BigFish_dead = 0
 
 	# extra food special
     extrafood = 0
@@ -234,8 +276,8 @@ def game_loop():
         gameDisplay.fill(blue)
         # if extrafood != 1:
         food(food_x,food_y,food_radius,food_color)
-        Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height)
-        Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish)
+        can_eat_Bigfish = Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,can_eat_Bigfish)
+        Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish,BigFish_dead)
         Display_Score(highscore,score,lives)
 
 
@@ -334,19 +376,22 @@ def game_loop():
             orientation_bigfish = 'r'
         else:
             orientation_bigfish = 'l'
-        
-        if Bigfish_x > display_width - BigFish_width or tracking_x > random.randrange(0,display_width):
-            Bigfish_x_change = -3
-            tracking_x = 0
-        if  Bigfish_x < 0 or tracking_x > random.randrange(0,display_width):
-            Bigfish_x_change = 3
-            tracking_x = 0
-        if  Bigfish_y > display_height - BigFish_height or tracking_y > random.randrange(0,display_height):
-            Bigfish_y_change = -3
-            tracking_y = 0
-        if  Bigfish_y < 0 or tracking_y > random.randrange(0,display_height):
-            Bigfish_y_change = 3
-            tracking_y = 0
+        if BigFish_dead == 0:
+            if Bigfish_x > display_width - BigFish_width or tracking_x > random.randrange(0,display_width):
+                Bigfish_x_change = -3
+                tracking_x = 0
+            if  Bigfish_x < 0 or tracking_x > random.randrange(0,display_width):
+                Bigfish_x_change = 3
+                tracking_x = 0
+            if  Bigfish_y > display_height - BigFish_height or tracking_y > random.randrange(0,display_height):
+                Bigfish_y_change = -3
+                tracking_y = 0
+            if  Bigfish_y < 0 or tracking_y > random.randrange(0,display_height):
+                Bigfish_y_change = 3
+                tracking_y = 0
+        if BigFish_dead == 1:
+        	Bigfish_x_change = 0
+        	Bigfish_y_change = -2
             
         Bigfish_x += Bigfish_x_change
         Bigfish_y += Bigfish_y_change
@@ -354,10 +399,16 @@ def game_loop():
         tracking_y += abs(Bigfish_y_change)/fps
              
         # Bigfish catches myfish
-        if x+fish_width > Bigfish_x  and  x < Bigfish_x + BigFish_width and y + fish_height> Bigfish_y+30  and y < Bigfish_y + BigFish_height-20:
-            y = 0
-            x = 0
-            lives -=1
+        if can_eat_Bigfish == 0:
+	        if x+fish_width > Bigfish_x  and  x < Bigfish_x + BigFish_width and y + fish_height> Bigfish_y+30  and y < Bigfish_y + BigFish_height-20:
+	            y = 0
+	            x = 0
+	            lives -=1
+        # Myfish eats bigfish
+        if can_eat_Bigfish == 1:
+            if x+fish_width > Bigfish_x  and  x < Bigfish_x + BigFish_width and y + fish_height> Bigfish_y+30  and y < Bigfish_y + BigFish_height-20:
+                BigFish_dead = 1
+            
 
 
 
