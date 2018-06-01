@@ -1,6 +1,5 @@
 
 a faire:
-- creer un compteur de vies, si le poisson consome toutes ses vies -> Game over.
 - poisson grossi quand il mange puis quand il est assez gros il donne une piece de monnaie.
 - inventer une moyen de gagner des sous pour pouvoir acheter des upgrades.
 - poissons libres qui se baladent random
@@ -12,7 +11,6 @@ Idees:
 - incorporer l'idee de pollution de l'eau
 - autres petits poissons peuvent etre manges par Myfish
 - ajouter des food qui donnent des pouvoirs speciaux (extra life, extra speed, etc.)
-- une food qui fasse tomber pleein de petit food partout.
 - possibilite de jouer a deux comme pour bubble trouble.
 - pour gagner le jeux, il faut etre plus grand que le Big fish et le manger!
 - quand le poisson est en train de floter (mort) si on clique dessu plusieurs fois il peut revivre!

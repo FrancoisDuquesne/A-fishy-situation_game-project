@@ -29,17 +29,9 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('A fishy situation')
 clock = pygame.time.Clock()
 
-#import fish images 
-# Fish_l  = pygame.image.load('Fish_l.png')
-# Fish_l  = pygame.transform.scale(Fish_l, (fish_width,fish_height))
-# # Fish_lb = pygame.image.load('Fish_lb.png')
-# # Fish_lb = pygame.transform.scale(Fish_lb, (fish_width,fish_height))
-# # Fish_b  = pygame.image.load('Fish_b.png')
-# # Fish_b  = pygame.transform.scale(Fish_b, (fish_width,fish_height))
-# # Fish_rb = pygame.image.load('Fish_rb.png')
-# # Fish_rb = pygame.transform.scale(Fish_rb, (fish_width,fish_height))
-# Fish_r  = pygame.image.load('Fish_r.png')
-# Fish_r  = pygame.transform.scale(Fish_r, (fish_width,fish_height))
+# import fish images 
+Fish_l_raw = pygame.image.load('resources/Fish_l.png')
+Fish_r_raw = pygame.transform.flip(Fish_l_raw,1,0)
 
 BigFish = pygame.image.load('resources/Bigfish.png')
 BigFish_l  = pygame.transform.scale(BigFish, (BigFish_width,BigFish_height))
@@ -59,20 +51,20 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height):
 
     if orientation == 'l':
         gameDisplay.blit(Fish_l,(x,y))
-        # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
     if orientation == 'r':
         gameDisplay.blit(Fish_r,(x,y))
-        # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
+        pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
 
 def fish_evolution(score,fish_width,fish_height,run_once):
     
     if score >=2 and run_once==0:
-        fish_width += round(fish_width*0.1)
-        fish_height += round(fish_height*0.1)
+        fish_width += round(fish_width*0.2)
+        fish_height += round(fish_height*0.2)
         run_once = 1
     if score >=5 and run_once == 1:
-        fish_width += round(fish_width*0.1)
-        fish_height += round(fish_height*0.1)
+        fish_width += round(fish_width*0.2)
+        fish_height += round(fish_height*0.2)
         run_once = 2
 
     return fish_width,fish_height,run_once
@@ -121,10 +113,7 @@ def game_loop():
 
 	##### LOCAL VARIABLES #####
 
-	# Images
-    Fish_l_raw  = pygame.image.load('resources/Fish_l.png')
-    Fish_r_raw  = pygame.image.load('resources/Fish_r.png')
-    # frames per second
+	# frames per second
     fps = 60
     # My fish starting point:
     x = (display_width * 0.45)
@@ -194,7 +183,19 @@ def game_loop():
                     y_change = -5
                 if event.key == pygame.K_DOWN:
                     y_change = 5
-                    
+
+                # for multiplayer 
+                if event.key == pygame.K_a:
+                    x_change = -5                  
+                    orientation = 'l'
+                if event.key == pygame.K_d:
+                    x_change = 5
+                    orientation = 'r'
+                if event.key == pygame.K_w:
+                    y_change = -5
+                if event.key == pygame.K_s:
+                    y_change = 5
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     x_change = 0
@@ -203,6 +204,15 @@ def game_loop():
                 if event.key == pygame.K_UP:
                     y_change = 0
                 if event.key == pygame.K_DOWN:
+                    y_change = 0
+				# for multiplayer
+                if event.key == pygame.K_a:
+                    x_change = 0
+                if event.key == pygame.K_d: 
+                    x_change = 0
+                if event.key == pygame.K_w:
+                    y_change = 0
+                if event.key == pygame.K_s:
                     y_change = 0
         x += x_change
         y += y_change
@@ -239,10 +249,10 @@ def game_loop():
         food_y += food_speed
         
         # Condition for Specials
-        if random.randrange(1,100*60) < 10:
+        if random.randrange(1,100*60) < 5:
             extrafood = 1
             
-        if random.randrange(1,100*60) < 5 :   # 5 chances sur 100 par secondes
+        if random.randrange(1,100*60) < 3 :   # 5 chances sur 100 par secondes
             extra_life = 1
 
         # Extra food special
@@ -250,7 +260,7 @@ def game_loop():
             draw = True
 
             if once_extrafood == 0:
-                extra_food_special_x = random.randrange(1,display_width)
+                extra_food_special_x = random.randrange(1,display_width-30)
                 extra_food_special_y = 0
                 once_extrafood = 1
 
