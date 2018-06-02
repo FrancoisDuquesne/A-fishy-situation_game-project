@@ -55,7 +55,7 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,ca
     angry_Fish_l = pygame.transform.scale(angry_Fish_l_raw, (fish_width,fish_height))
     angry_Fish_r = pygame.transform.scale(angry_Fish_r_raw, (fish_width,fish_height))
     if can_eat_Bigfish ==0:
-        if fish_width < 85:
+        if fish_width < 115:
             if orientation == 'l':
                 gameDisplay.blit(Fish_l,(x,y))
                 # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
@@ -63,7 +63,7 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,ca
                 gameDisplay.blit(Fish_r,(x,y))
                 # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
 
-        if fish_width > 85:
+        if fish_width > 115:
             if orientation == 'l':
                 gameDisplay.blit(Fish_l,(x,y))
                 # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
@@ -91,17 +91,25 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,ca
 def fish_evolution(score,fish_width,fish_height,run_once):
     
     if score >=2 and run_once==0:
-        fish_width += round(fish_width*0.23)
+        fish_width += round(fish_width*0.3)
         fish_height += round(fish_height*0.3)
         run_once = 1
     if score >=5 and run_once == 1:
-        fish_width += round(fish_width*0.4)
-        fish_height += round(fish_height*0.4)
+        fish_width += round(fish_width*0.3)
+        fish_height += round(fish_height*0.3)
         run_once = 2
     if score >=10 and run_once == 2:
+        fish_width += round(fish_width*0.3)
+        fish_height += round(fish_height*0.3)
+        run_once = 3
+    if score >=15 and run_once == 3:
+        fish_width += round(fish_width*0.3)
+        fish_height += round(fish_height*0.3)
+        run_once = 4
+    if score >=20 and run_once == 4:
         fish_width += round(fish_width*0.5)
         fish_height += round(fish_height*0.5)
-        run_once = 3
+        run_once = 5
 
     return fish_width,fish_height,run_once
 
@@ -159,8 +167,8 @@ def game_loop():
     x = (display_width * 0.45)
     y = (display_height * 0.8)
     orientation = 'l'
-    fish_width = 60
-    fish_height = 35
+    fish_width = 40
+    fish_height = 25
     can_eat_Bigfish = 0
     # fish position change
     x_change = 0
@@ -276,8 +284,8 @@ def game_loop():
         gameDisplay.fill(blue)
         # if extrafood != 1:
         food(food_x,food_y,food_radius,food_color)
-        can_eat_Bigfish = Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,can_eat_Bigfish)
         Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish,BigFish_dead)
+        can_eat_Bigfish = Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,can_eat_Bigfish)
         Display_Score(highscore,score,lives)
 
 
