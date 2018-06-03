@@ -10,26 +10,29 @@ import random
 
 pygame.init()
 
-display_width = 800
+display_width = 900
 display_height = 600
 
+gameDisplay = pygame.display.set_mode((display_width,display_height))
+pygame.display.set_caption('A fishy situation')
+clock = pygame.time.Clock()
+
+# colors
 black = (0,0,0)
 white = (255,255,255)
 red = (255,0,0)
 blue = (19,187,255)
 food_color = (255,187,19)
 
+# variables
 fish_width = 60
 fish_height = 35
 
 BigFish_width = 250
 BigFish_height = 120
 
-gameDisplay = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption('A fishy situation')
-clock = pygame.time.Clock()
 
-# import fish images 
+# import images 
 Fish_l_raw = pygame.image.load('resources/Fish_l.png')
 Fish_r_raw = pygame.transform.flip(Fish_l_raw,1,0)
 
@@ -46,6 +49,7 @@ Banana = pygame.transform.scale(Banana, (30,30))
 angry_Fish_l_raw = pygame.image.load('resources/angry_fish.png')
 angry_Fish_r_raw = pygame.transform.flip(angry_Fish_l_raw,1,0)
 
+### Definitions 
 
 def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,can_eat_Bigfish):
 
@@ -61,15 +65,12 @@ def Myfish(x,y,orientation,score,Fish_l_raw,Fish_r_raw,fish_width,fish_height,ca
                 # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
             if orientation == 'r':
                 gameDisplay.blit(Fish_r,(x,y))
-                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
 
         if fish_width > 115:
             if orientation == 'l':
                 gameDisplay.blit(Fish_l,(x,y))
-                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
             if orientation == 'r':
                 gameDisplay.blit(Fish_r,(x,y))
-                # pygame.draw.rect(gameDisplay,red,(x,y,fish_width,fish_height),2)
             can_eat_Bigfish = 1
 
     if can_eat_Bigfish == 1:
@@ -129,7 +130,6 @@ def Display_Score(highscore,score,lives):
     for i in range(lives):
     	gameDisplay.blit(Life,(3+i*30,43))
 
-        
 def mort():
     GameOver_Display('No more lives left :(')
 
@@ -138,7 +138,7 @@ def GameOver_Display(texte):
     textSurface = textefont.render(texte,True,black)
     TextSurf , TextRect = textSurface,textSurface.get_rect()
     TextRect.center = ((display_width/2),(display_height/2))
-    # gameDisplay.fill(blue)
+    gameDisplay.fill(blue)
     gameDisplay.blit(TextSurf,TextRect)
     pygame.display.flip()
 
@@ -147,10 +147,8 @@ def Bigfish(Bigfish_x,Bigfish_y,orientation_bigfish,BigFish_dead):
     if BigFish_dead == 0:
         if orientation_bigfish == 'l':
             gameDisplay.blit(BigFish_l,(Bigfish_x,Bigfish_y))
-            # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
         if orientation_bigfish == 'r':
             gameDisplay.blit(BigFish_r,(Bigfish_x,Bigfish_y))
-            # pygame.draw.rect(gameDisplay,red,(Bigfish_x,Bigfish_y+30,BigFish_width,BigFish_height-50),2)
     if BigFish_dead == 1: 
         BigFishDead = pygame.transform.flip(BigFish_l,0,1)
         gameDisplay.blit(BigFishDead,(Bigfish_x,Bigfish_y))
@@ -191,26 +189,25 @@ def game_loop():
     tracking_y = 0
     orientation_bigfish = 'l'
     BigFish_dead = 0
-
 	# extra food special
     extrafood = 0
     once_extrafood = 0
     start_bonus_food = 0
     extra_food_x = []
     extra_food_y = []
-
     #extra life special 
     extra_life = 0
     once_life = 0
     proba = random.randrange(0,100)/100
     life_x = random.randrange(0,display_width)
     life_y = 0
-
-
+    # other
     framecount = 0
     run_once=0
     gameExit = False
     
+
+
     while not gameExit:
         
         ###### KEYS #####
@@ -326,11 +323,9 @@ def game_loop():
                 start_time = time.clock()
                 start_bonus_food = 1
 
-
             if extra_food_special_y > display_height:
             	extrafood = 0
             	once_extrafood = 0
-
 
         if start_bonus_food == 1:
             elapsed_time = time.clock() - start_time 
@@ -342,12 +337,9 @@ def game_loop():
             extra_food(extra_food_x,extra_food_y,food_radius,food_color)
             
             if  elapsed_time > 3 and min(extra_food_y) > display_height:
-                # extrafood = 0
-                # print(extrafood)
                 start_bonus_food = 0
 
 
-        
         # extra life special:
         if extra_life == 1:
             if once_life == 0:
@@ -412,14 +404,12 @@ def game_loop():
 	            y = 0
 	            x = 0
 	            lives -=1
+
         # Myfish eats bigfish
         if can_eat_Bigfish == 1:
             if x+fish_width > Bigfish_x  and  x < Bigfish_x + BigFish_width and y + fish_height> Bigfish_y+30  and y < Bigfish_y + BigFish_height-20:
                 BigFish_dead = 1
             
-
-
-
         # Highscore calculation   
         if score > highscore:
            highscore = score
@@ -430,7 +420,6 @@ def game_loop():
             time.sleep(2)
             pygame.quit()
             quit()
-
 
         # frame counter
         if framecount > 59:
