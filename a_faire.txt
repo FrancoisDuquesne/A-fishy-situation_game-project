@@ -2,7 +2,7 @@
 a faire:
 - poisson grossi quand il mange puis quand il est assez gros il donne une piece de monnaie.
 - inventer une moyen de gagner des sous pour pouvoir acheter des upgrades.
-- poissons libres qui se baladent random
+- ajouter movement autonome des poissons (se baladent randomly)
 - quand le poisson meurt, faire qu'il se retourne (ventre vers le haut et il flotte)
 
 
