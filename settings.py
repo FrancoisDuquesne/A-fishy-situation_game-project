@@ -1,10 +1,12 @@
 # display
-display_width = 900
-display_height = 600
+DISPLAY_WIDTH = 900
+DISPLAY_HEIGHT = 600
 
 # colors
-black = (0, 0, 0)
-white = (255, 255, 255)
-red = (255, 0, 0)
-blue = (19, 187, 255)
-food_color = (255, 187, 19)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLUE = (19, 187, 255)
+GREEN = (0, 255, 0)
+CYAN = (0, 255, 255)
+ORANGE = (255, 187, 19)
