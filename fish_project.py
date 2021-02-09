@@ -303,7 +303,7 @@ def game_loop():
             extra_life = 1
 
         # Extra food special
-        if extrafood ==1:
+        if extrafood == 1:
             draw = True
 
             if once_extrafood == 0:
@@ -320,7 +320,7 @@ def game_loop():
                 extra_food_special_y = display_height
                 draw = False
                 # start_bonus_food = 1
-                start_time = time.clock()
+                start_time = time.process_time()
                 start_bonus_food = 1
 
             if extra_food_special_y > display_height:
@@ -328,7 +328,7 @@ def game_loop():
             	once_extrafood = 0
 
         if start_bonus_food == 1:
-            elapsed_time = time.clock() - start_time 
+            elapsed_time = time.process_time() - start_time 
 
             if elapsed_time < 3 and framecount == 1 or elapsed_time < 3 and framecount == 15 or elapsed_time < 3 and framecount == 30 or elapsed_time < 3 and framecount == 45:
                 extra_food_x.append(random.randrange(1, display_width))
