@@ -15,34 +15,13 @@ gameDisplay = pygame.display.set_mode((settings.DISPLAY_WIDTH, settings.DISPLAY_
 pygame.display.set_caption('A fishy situation')
 clock = pygame.time.Clock()
 
-# variables
-fish_width = 60
-fish_height = 35
-
-BigFish_width = 250
-BigFish_height = 120
-
 
 # import images
-Fish_l_raw = pygame.image.load('resources/Fish_l.png')
-Fish_r_raw = pygame.transform.flip(Fish_l_raw, 1, 0)
-
-BigFish = pygame.image.load('resources/Bigfish.png')
-BigFish_l = pygame.transform.scale(BigFish, (BigFish_width, BigFish_height))
-BigFish_r = pygame.transform.flip(BigFish_l, 1,  0)
-
-Life = pygame.image.load('resources/life.png')
-Life = pygame.transform.scale(Life, (20, 20))
-
-Banana = pygame.image.load('resources/banana.png')
-Banana = pygame.transform.scale(Banana, (30, 30))
-
-angry_Fish_l_raw = pygame.image.load('resources/angry_fish.png')
-angry_Fish_r_raw = pygame.transform.flip(angry_Fish_l_raw, 1, 0)
+Life_img = pygame.transform.scale(pygame.image.load('resources/life.png'), (20, 20))
+Banana_img = pygame.transform.scale(pygame.image.load('resources/banana.png'), (30, 30))
 
 
 # Definitions
-
 def food(foodx, foody, foodw, color):
     pygame.draw.circle(gameDisplay, color, (foodx, foody), foodw)
 
@@ -59,7 +38,7 @@ def Display_Score(highscore, score, lives):
     text2 = font.render("Score: " + str(score), True, settings.BLACK)
     gameDisplay.blit(text2, (3, 23))
     for i in range(lives):
-        gameDisplay.blit(Life, (3+i*30, 43))
+        gameDisplay.blit(Life_img, (3+i*30, 43))
 
 
 def mort():
@@ -92,10 +71,6 @@ def game_loop():
     # LOCAL VARIABLES #
     # frames per second
     fps = 60
-    # My fish starting point:
-    fish_width = 40
-    fish_height = 25
-    # fish position change
     x_change = 0
     y_change = 0
     # food position
@@ -212,12 +187,12 @@ def game_loop():
 
             if draw:
                 # pygame.draw.circle(gameDisplay, settings.RED, (extra_food_special_x, extra_food_special_y), food_radius+1)
-                gameDisplay.blit(Banana, (extra_food_special_x, extra_food_special_y))
+                gameDisplay.blit(Banana_img, (extra_food_special_x, extra_food_special_y))
                 extra_food_special_y += 1
 
             # for my_fish_entity
             # ======================
-            if extra_food_special_x + 30 > my_fish_entity.pos.x and extra_food_special_x < my_fish_entity.pos.x + fish_width and extra_food_special_y + 30 > my_fish_entity.pos.y and extra_food_special_y < my_fish_entity.pos.y + fish_height:
+            if extra_food_special_x + 30 > my_fish_entity.pos.x and extra_food_special_x < my_fish_entity.pos.x + my_fish_entity.width and extra_food_special_y + 30 > my_fish_entity.pos.y and extra_food_special_y < my_fish_entity.pos.y + my_fish_entity.height:
                 extra_food_special_y = settings.DISPLAY_HEIGHT
                 draw = False
                 # start_bonus_food = 1
@@ -247,10 +222,10 @@ def game_loop():
                 life_x = random.randrange(0, settings.DISPLAY_WIDTH - 20)
                 life_y = -20
                 once_life = 1
-            gameDisplay.blit(Life, (life_x, life_y))
+            gameDisplay.blit(Life_img, (life_x, life_y))
             life_y += 1
 
-        if life_x > my_fish_entity.pos.x and life_x < my_fish_entity.pos.x + fish_width and life_y > my_fish_entity.pos.y and life_y < my_fish_entity.pos.y + fish_height:
+        if life_x > my_fish_entity.pos.x and life_x < my_fish_entity.pos.x + my_fish_entity.width and life_y > my_fish_entity.pos.y and life_y < my_fish_entity.pos.y + my_fish_entity.height:
             life_y = settings.DISPLAY_HEIGHT
             lives += 1
 
@@ -260,11 +235,11 @@ def game_loop():
 
         # fish catches food
         for i in range(len(extra_food_x)):
-            if extra_food_x[i] > my_fish_entity.pos.x and extra_food_x[i] < my_fish_entity.pos.x + fish_width and extra_food_y[i] > my_fish_entity.pos.y and extra_food_y[i] < my_fish_entity.pos.y + fish_height:
+            if extra_food_x[i] > my_fish_entity.pos.x and extra_food_x[i] < my_fish_entity.pos.x + my_fish_entity.width and extra_food_y[i] > my_fish_entity.pos.y and extra_food_y[i] < my_fish_entity.pos.y + my_fish_entity.height:
                 extra_food_y[i] = settings.DISPLAY_HEIGHT
                 score += 1
                 my_fish_entity.grow()
-        if food_x > my_fish_entity.pos.x and food_x < my_fish_entity.pos.x + fish_width and food_y > my_fish_entity.pos.y and food_y < my_fish_entity.pos.y + fish_height:
+        if food_x > my_fish_entity.pos.x and food_x < my_fish_entity.pos.x + my_fish_entity.width and food_y > my_fish_entity.pos.y and food_y < my_fish_entity.pos.y + my_fish_entity.height:
             food_y = settings.DISPLAY_HEIGHT
             score += 1
             my_fish_entity.grow()
@@ -282,7 +257,7 @@ def game_loop():
         pygame.draw.line(gameDisplay, settings.CYAN, center, big_fish_entity.displacement, 5)
 
         # Collision Bigfish/myfish
-        if my_fish_entity.pos.x+fish_width > big_fish_entity.pos.x and my_fish_entity.pos.x < big_fish_entity.pos.x + BigFish_width and my_fish_entity.pos.y + fish_height > big_fish_entity.pos.y + 30 and my_fish_entity.pos.y < big_fish_entity.pos.y + BigFish_height-20:
+        if my_fish_entity.pos.x+my_fish_entity.width > big_fish_entity.pos.x and my_fish_entity.pos.x < big_fish_entity.pos.x + big_fish_entity.width and my_fish_entity.pos.y + my_fish_entity.height > big_fish_entity.pos.y + 30 and my_fish_entity.pos.y < big_fish_entity.pos.y + big_fish_entity.height-20:
             if my_fish_entity.can_take_revenge:
                 BigFish_dead = 1
                 my_fish_entity.eat(big_fish_entity)
