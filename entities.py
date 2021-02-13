@@ -18,9 +18,12 @@ class Fish():
         self.orientation = 'l'
         self.pos = vec(0, 0)
         self.display_img = ''
+        self.lives = 1
 
     def move(self, dx, dy):
         self.pos += vec(dx, dy)
+        self.orientation = 'r' if dx > 0 else 'l'
+
         # define boundaries for fish movement on on display
         max_x = settings.DISPLAY_WIDTH - self.width
         max_y = settings.DISPLAY_HEIGHT - self.height
@@ -40,6 +43,9 @@ class Fish():
         if self.orientation == 'r':
             return pygame.transform.flip(self.display_img, 1, 0)
 
+    def eat(self, entity):
+        entity.get_eaten()
+
 
 class MyFish(Fish):
     def __init__(self):
@@ -47,13 +53,15 @@ class MyFish(Fish):
         self.pos = vec(settings.DISPLAY_WIDTH * 0.45, settings.DISPLAY_HEIGHT * 0.8)
         self.evolved = False
         self.evolution_width = 100
+        self.lives = 3
+        self.can_take_revenge = False
 
         raw_img = pygame.image.load('resources/Fish_l.png')
         self.display_img = pygame.transform.scale(raw_img, (self.width, self.height))
 
     def grow(self):
-        self.width += 10
-        self.height += 10
+        self.width += 100  # = round(self.width * 0.3)
+        self.height += 100  # = round(self.height * 0.3)
         if self.width >= self.evolution_width and not self.evolved:
             self.evolve()
 
@@ -62,6 +70,14 @@ class MyFish(Fish):
         raw_img = pygame.image.load('resources/angry_fish.png')
         self.display_img = pygame.transform.scale(raw_img, (self.width, self.height))
         self.evolved = True
+        self.can_take_revenge = True
+
+    def respawn(self):
+        self.pos = vec(0, 0)
+
+    def get_eaten(self):
+        self.lives -= 1
+        self.respawn()
 
 
 class BigFish(Fish):
@@ -101,6 +117,7 @@ class BigFish(Fish):
         if self.vel.length() > MAX_SPEED:
             self.vel.scale_to_length(MAX_SPEED)
         self.pos += self.vel
+        self.orientation = 'r' if self.vel.x > 0 else 'l'
         if self.pos.x > settings.DISPLAY_WIDTH:
             self.pos.x = 0
         if self.pos.x < 0:
@@ -109,3 +126,6 @@ class BigFish(Fish):
             self.pos.y = 0
         if self.pos.y < 0:
             self.pos.y = settings.DISPLAY_HEIGHT
+
+    def get_eaten(self):
+        self.pos = vec(0, 0)
