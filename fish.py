@@ -3,10 +3,6 @@ import settings
 from random import randint, uniform
 from pygame.sprite import Sprite
 
-# class Ball(Sprite):
-#
-#     def __init__(self, ai_settings, screen):
-#         super(Ball, self).__init__()
 
 vec = pygame.math.Vector2
 
@@ -14,15 +10,14 @@ MAX_SPEED = 3
 MAX_FORCE = 0.9
 WANDER_RING_DISTANCE = 200
 WANDER_RING_RADIUS = 20
+MAX_WIDTH = 200
 
 
-class Fish():
-    # def __init__(self, ai_settings, screen):
+class Fish(Sprite):
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        # super(Fish, self).__init__()
-        self.width = 60
-        self.height = 35
+        super().__init__()
+        self.width = 40
+        self.height = 20
         self.orientation = 'l'
         self.pos = vec(0, 0)
         self.image = ''
@@ -43,7 +38,7 @@ class Fish():
 
 class MyFish(Fish):
     def __init__(self):
-        super(MyFish, self).__init__()
+        super().__init__()
         self.pos = vec(settings.DISPLAY_WIDTH * 0.45, settings.DISPLAY_HEIGHT * 0.8)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
@@ -57,10 +52,12 @@ class MyFish(Fish):
         self.moving_left = False
         self.moving_up = False
         self.moving_down = False
-        # raw_img = pygame.image.load('resources/Fish_l.png')
-        # self.image = pygame.transform.scale(raw_img, (self.width, self.height))
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(settings.ORANGE)
+        if settings.DEBUG:
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(settings.ORANGE)
+        else:
+            raw_img = pygame.image.load('resources/Fish_l.png')
+            self.image = pygame.transform.scale(raw_img, (self.width, self.height))
         self.rect = self.image.get_rect()
         self.rect.center = self.pos + vec(self.width/2, self.height/2)
 
@@ -74,27 +71,40 @@ class MyFish(Fish):
             # self.acc = vec(0, 0)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    self.acc.x = 3
-                if event.key == pygame.K_LEFT:
-                    self.acc.x = -3
-                if event.key == pygame.K_UP:
-                    self.acc.y = -3
-                if event.key == pygame.K_DOWN:
-                    self.acc.y = 3
+                    self.acc.x += 3
+                elif event.key == pygame.K_LEFT:
+                    self.acc.x += -3
+                elif event.key == pygame.K_UP:
+                    self.acc.y += -3
+                elif event.key == pygame.K_DOWN:
+                    self.acc.y += 3
                 # quit game
-                if event.key == pygame.K_q:
+                elif event.key == pygame.K_q:
                     pygame.quit()
                     quit()
+                # elif event.key == pygame.K_d:
+                #     print("TOGGLE DEBUG")
+                #     settings.DEBUG = not settings.DEBUG
 
-            if event.type == pygame.KEYUP:
+            elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
                     self.acc.x = 0
-                if event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT:
                     self.acc.x = 0
-                if event.key == pygame.K_UP:
+                elif event.key == pygame.K_UP:
                     self.acc.y = 0
-                if event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN:
                     self.acc.y = 0
+    # pressed_keys = pygame.key.get_pressed()
+    # # print("pressed_keys", pressed_keys)
+    # if pressed_keys[K_RIGHT]:
+    #     self.acc.x += 3
+    # if pressed_keys[K_LEFT]:
+    #     self.acc.x += -3
+    # if pressed_keys[K_UP]:
+    #     self.acc.y += -3
+    # if pressed_keys[K_DOWN]:
+    #     self.acc.y += 3
 
         # update speed
         self.vel += self.acc - self.vel*self.friction
@@ -119,16 +129,22 @@ class MyFish(Fish):
             self.pos.y = 0
 
     def grow(self):
-        self.width = self.width + round(self.width * 0.3)
-        self.height = self.height + round(self.height * 0.3)
-        print("My fish width: ", self.width)
+        if not self.width > MAX_WIDTH:
+            self.width = self.width + round(self.width * 0.3)
+            self.height = self.height + round(self.height * 0.3)
         if self.width >= self.evolution_width and not self.evolved:
             self.evolve()
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(settings.ORANGE)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos + vec(self.width/2, self.height/2)
 
     def evolve(self):
-        print("EVOLVING")
-        raw_img = pygame.image.load('resources/angry_fish.png')
-        self.image = pygame.transform.scale(raw_img, (self.width, self.height))
+        if settings.DEBUG:
+            self.image.fill(settings.RED)
+        else:
+            raw_img = pygame.image.load('resources/angry_fish.png')
+            self.image = pygame.transform.scale(raw_img, (self.width, self.height))
         self.evolved = True
         self.can_take_revenge = True
 
@@ -142,14 +158,17 @@ class MyFish(Fish):
 
 class BigFish(Fish):
     def __init__(self):
-        super(BigFish, self).__init__()
+        super().__init__()
         self.width = 250
         self.height = 120
         self.evolved = False
         self.evolution_width = 100
-        # raw_img = pygame.image.load('resources/Bigfish.png')
-        # self.image = pygame.transform.scale(raw_img, (self.width, self.height))
-        self.image = pygame.Surface([self.width, self.height])
+        if settings.DEBUG:
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(settings.WHITE)
+        else:
+            raw_img = pygame.image.load('resources/Bigfish.png')
+            self.image = pygame.transform.scale(raw_img, (self.width, self.height))
         self.rect = self.image.get_rect()
         self.pos = vec(settings.DISPLAY_WIDTH * 0.40, settings.DISPLAY_HEIGHT * 0.45)
         self.rect.center = self.pos + vec(self.width/2, self.height/2)
