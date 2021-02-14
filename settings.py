@@ -1,3 +1,8 @@
+DEBUG = True
+
+# frames per second
+FPS = 60
+
 # display
 DISPLAY_WIDTH = 900
 DISPLAY_HEIGHT = 600
