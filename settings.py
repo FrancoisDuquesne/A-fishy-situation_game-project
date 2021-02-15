@@ -1,11 +1,11 @@
-DEBUG = True
+DEBUG = 0
 
 # frames per second
 FPS = 60
 
 # display
-DISPLAY_WIDTH = 900
-DISPLAY_HEIGHT = 600
+DISPLAY_WIDTH = 1200
+DISPLAY_HEIGHT = 700
 
 # colors
 BLACK = (0, 0, 0)

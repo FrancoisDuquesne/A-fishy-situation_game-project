@@ -11,6 +11,7 @@ MAX_FORCE = 0.9
 WANDER_RING_DISTANCE = 200
 WANDER_RING_RADIUS = 20
 MAX_WIDTH = 200
+EVOLUTION_WIDTH = 200
 
 
 class Fish(Sprite):
@@ -45,7 +46,6 @@ class MyFish(Fish):
         self.friction = 0.05
         self.max_speed = 10
         self.evolved = False
-        self.evolution_width = 100
         self.lives = 3
         self.can_take_revenge = False
         self.moving_right = False
@@ -132,21 +132,29 @@ class MyFish(Fish):
         if not self.width > MAX_WIDTH:
             self.width = self.width + round(self.width * 0.3)
             self.height = self.height + round(self.height * 0.3)
-        if self.width >= self.evolution_width and not self.evolved:
+        if self.width >= EVOLUTION_WIDTH and not self.evolved:
             self.evolve()
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(settings.ORANGE)
+        self.set_image()
         self.rect = self.image.get_rect()
         self.rect.center = self.pos + vec(self.width/2, self.height/2)
 
     def evolve(self):
-        if settings.DEBUG:
-            self.image.fill(settings.RED)
-        else:
-            raw_img = pygame.image.load('resources/angry_fish.png')
-            self.image = pygame.transform.scale(raw_img, (self.width, self.height))
         self.evolved = True
         self.can_take_revenge = True
+
+    def set_image(self):
+        if settings.DEBUG:
+            self.image = pygame.Surface([self.width, self.height])
+            if self.can_take_revenge:
+                self.image.fill(settings.RED)
+            else:
+                self.image.fill(settings.ORANGE)
+        else:
+            if self.can_take_revenge:
+                raw_img = pygame.image.load('resources/angry_fish.png')
+            else:
+                raw_img = pygame.image.load('resources/Fish_l.png')
+            self.image = pygame.transform.scale(raw_img, (self.width, self.height))
 
     def respawn(self):
         self.pos = vec(0, 0)
