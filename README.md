@@ -1,4 +1,4 @@
-# A-fishy-situation_game-project
+# A fishy situation
 
 Hey!
 
